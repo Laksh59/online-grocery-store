@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getAllOrders,
-  confirmOrder,
   updateOrderStatus,
-  cancelOrder,
 } from "../services/orderService";
 import "../scss/AdminOrders.scss";
 
@@ -27,23 +25,6 @@ function AdminOrders() {
     loadOrders();
   }, []);
 
-  const handleConfirm = async (orderId) => {
-    try {
-      setLoading(true);
-
-      await confirmOrder(orderId);
-
-      await loadOrders();
-
-      alert("Order confirmed successfully");
-    } catch (error) {
-      console.error("Error confirming order:", error);
-      alert("Failed to confirm order");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleDelivered = async (orderId) => {
     try {
       setLoading(true);
@@ -56,31 +37,6 @@ function AdminOrders() {
     } catch (error) {
       console.error("Error updating order:", error);
       alert("Failed to update order");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCancel = async (orderId) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to cancel this order?",
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      await cancelOrder(orderId);
-
-      await loadOrders();
-
-      alert("Order cancelled successfully");
-    } catch (error) {
-      console.error("Error cancelling order:", error);
-      alert("Failed to cancel order");
     } finally {
       setLoading(false);
     }
@@ -146,37 +102,14 @@ function AdminOrders() {
 
               <div className="order-actions">
                 {order.orderStatus === "CREATED" && (
-                  <button
-                    type="button"
-                    onClick={() => handleConfirm(order.orderId)}
-                    disabled={loading}
-                    className="confirm-button"
-                  >
-                    Confirm Order
-                  </button>
-                )}
-
-                {order.orderStatus === "CONFIRMED" && (
-                  <button
-                    type="button"
-                    onClick={() => handleDelivered(order.orderId)}
-                    disabled={loading}
-                    className="delivered-button"
-                  >
-                    Mark Delivered
-                  </button>
-                )}
-
-                {(order.orderStatus === "CREATED" ||
-                  order.orderStatus === "CONFIRMED") && (
-                  <button
-                    type="button"
-                    onClick={() => handleCancel(order.orderId)}
-                    disabled={loading}
-                    className="cancel-button"
-                  >
-                    Cancel Order
-                  </button>
+                    <button
+                        type="button"
+                        onClick={() => handleDelivered(order.orderId)}
+                        disabled={loading}
+                        className="delivered-button"
+                    >
+                      Mark as Delivered
+                    </button>
                 )}
               </div>
             </div>

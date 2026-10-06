@@ -24,14 +24,13 @@ function AdminCategories() {
     loadCategories();
   }, []);
 
-  const loadCategories = () => {
-    getAllCategories()
-      .then((response) => {
-        setCategories(response.data);
-      })
-      .catch((error) => {
-        console.error("Error fetching categories", error);
-      });
+  const loadCategories = async () => {
+    try {
+      const response = await getAllCategories();
+      setCategories(response.data);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    }
   };
 
   const handleAddCategory = () => {
@@ -50,7 +49,7 @@ function AdminCategories() {
 
     setFormData({
       categoryName: category.categoryName,
-      description: category.description,
+      description: category.description || "",
     });
 
     setShowForm(true);
@@ -59,49 +58,51 @@ function AdminCategories() {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    setFormData({
-      ...formData,
+    setFormData((previous) => ({
+      ...previous,
       [name]: value,
-    });
+    }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (editCategoryId) {
-      updateCategory(editCategoryId, formData)
-        .then(() => {
-          setShowForm(false);
-          setEditCategoryId(null);
-          loadCategories();
-        })
-        .catch((error) => {
-          console.error("Error updating category", error);
-        });
-    } else {
-      createCategory(formData)
-        .then(() => {
-          setShowForm(false);
-          loadCategories();
-        })
-        .catch((error) => {
-          console.error("Error creating category", error);
-        });
+    try {
+      if (editCategoryId !== null) {
+        await updateCategory(editCategoryId, formData);
+        alert("Category updated successfully");
+      } else {
+        await createCategory(formData);
+        alert("Category created successfully");
+      }
+
+      handleCancel();
+      loadCategories();
+    } catch (error) {
+      console.error("Error saving category:", error);
+      alert("Failed to save category");
     }
   };
 
-  const handleDelete = (categoryId) => {
-    if (!window.confirm("Are you sure you want to delete this category?")) {
+  const handleDelete = async (categoryId) => {
+    const confirmed = window.confirm(
+        "Are you sure you want to delete this category?"
+    );
+
+    if (!confirmed) {
       return;
     }
 
-    deleteCategory(categoryId)
-      .then(() => {
-        loadCategories();
-      })
-      .catch((error) => {
-        console.error("Error deleting category", error);
-      });
+    try {
+      await deleteCategory(categoryId);
+
+      alert("Category deleted successfully");
+
+      loadCategories();
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      alert("Failed to delete category");
+    }
   };
 
   const handleCancel = () => {
@@ -115,137 +116,152 @@ function AdminCategories() {
   };
 
   return (
-    <div className="admin-categories">
-      <div className="admin-categories-header">
-        <div>
-          <h1>Category Management</h1>
-          <p>Organize your FreshNest products by category</p>
-        </div>
-
-        <div className="header-actions">
-          <button
-            type="button"
-            className="secondary-button"
-            onClick={() => navigate("/admin")}
-          >
-            Back to Dashboard
-          </button>
-
-          <button
-            type="button"
-            className="primary-button"
-            onClick={handleAddCategory}
-          >
-            + Add Category
-          </button>
-        </div>
-      </div>
-
-      {showForm && (
-        <div className="category-form-card">
-          <div className="form-header">
-            <h2>{editCategoryId ? "Edit Category" : "Add Category"}</h2>
-          </div>
-
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Category Name</label>
-
-              <input
-                type="text"
-                name="categoryName"
-                value={formData.categoryName}
-                onChange={handleChange}
-                placeholder="Enter category name"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label>Description</label>
-
-              <textarea
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                placeholder="Enter category description"
-                rows="4"
-              />
-            </div>
-
-            <div className="form-actions">
-              <button type="submit" className="primary-button">
-                {editCategoryId ? "Update Category" : "Save Category"}
-              </button>
-
-              <button
-                type="button"
-                className="cancel-button"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
-
-      <div className="category-table-card">
-        <div className="table-header">
+      <div className="admin-categories">
+        <div className="admin-categories-header">
           <div>
-            <h2>Categories</h2>
-            <span>{categories.length} categories</span>
+            <h1>Category Management</h1>
+            <p>
+              Organize FreshNest products by category.
+            </p>
+          </div>
+
+          <div className="header-actions">
+            <button
+                type="button"
+                className="secondary-button"
+                onClick={() => navigate("/admin/inventory")}
+            >
+              Back to Inventory
+            </button>
+
+            <button
+                type="button"
+                className="primary-button"
+                onClick={handleAddCategory}
+            >
+              + Add Category
+            </button>
           </div>
         </div>
 
-        <div className="table-container">
-          <table>
-            <thead>
+        {showForm && (
+            <div className="category-form-card">
+              <div className="form-header">
+                <h2>
+                  {editCategoryId !== null
+                      ? "Edit Category"
+                      : "Add Category"}
+                </h2>
+              </div>
+
+              <form onSubmit={handleSubmit}>
+                <div className="form-group">
+                  <label>Category Name</label>
+
+                  <input
+                      type="text"
+                      name="categoryName"
+                      value={formData.categoryName}
+                      onChange={handleChange}
+                      placeholder="Enter category name"
+                      required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Description</label>
+
+                  <textarea
+                      name="description"
+                      value={formData.description}
+                      onChange={handleChange}
+                      placeholder="Enter category description"
+                      rows="4"
+                  />
+                </div>
+
+                <div className="form-actions">
+                  <button
+                      type="submit"
+                      className="primary-button"
+                  >
+                    {editCategoryId !== null
+                        ? "Update Category"
+                        : "Save Category"}
+                  </button>
+
+                  <button
+                      type="button"
+                      className="cancel-button"
+                      onClick={handleCancel}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+        )}
+
+        <div className="category-table-card">
+          <div className="table-header">
+            <div>
+              <h2>Categories</h2>
+              <span>{categories.length} categories</span>
+            </div>
+          </div>
+
+          <div className="table-container">
+            <table>
+              <thead>
               <tr>
-                <th>Category ID</th>
+                <th>ID</th>
                 <th>Category Name</th>
                 <th>Description</th>
                 <th>Actions</th>
               </tr>
-            </thead>
+              </thead>
 
-            <tbody>
+              <tbody>
               {categories.map((category) => (
-                <tr key={category.categoryId}>
-                  <td>{category.categoryId}</td>
+                  <tr key={category.categoryId}>
+                    <td>{category.categoryId}</td>
 
-                  <td className="category-name">{category.categoryName}</td>
+                    <td className="category-name">
+                      {category.categoryName}
+                    </td>
 
-                  <td className="category-description">
-                    {category.description || "—"}
-                  </td>
+                    <td className="category-description">
+                      {category.description || "—"}
+                    </td>
 
-                  <td>
-                    <div className="action-buttons">
-                      <button
-                        type="button"
-                        className="edit-button"
-                        onClick={() => handleEdit(category)}
-                      >
-                        Edit
-                      </button>
+                    <td>
+                      <div className="action-buttons">
+                        <button
+                            type="button"
+                            className="edit-button"
+                            onClick={() => handleEdit(category)}
+                        >
+                          Edit
+                        </button>
 
-                      <button
-                        type="button"
-                        className="delete-button"
-                        onClick={() => handleDelete(category.categoryId)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                        <button
+                            type="button"
+                            className="delete-button"
+                            onClick={() =>
+                                handleDelete(category.categoryId)
+                            }
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
               ))}
-            </tbody>
-          </table>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
   );
 }
 

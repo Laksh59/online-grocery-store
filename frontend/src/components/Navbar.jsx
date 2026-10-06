@@ -1,10 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useCart } from "../CartContext";
 import "../scss/Navbar.scss";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -13,18 +14,32 @@ function Navbar() {
   );
 
   const { cart } = useCart();
+
   const totalItems = cart.reduce(
-    (total, item) => total + item.quantity,0,);
+    (total, item) => total + item.quantity,
+    0,
+  );
+
+  const isAdminApp = window.location.port === "5174";
+  const isAdmin = customer?.role === "ADMIN";
 
   useEffect(() => {
     const updateCustomer = () => {
       setCustomer(JSON.parse(localStorage.getItem("customer")));
     };
+
     window.addEventListener("customerChanged", updateCustomer);
+
     return () => {
       window.removeEventListener("customerChanged", updateCustomer);
     };
   }, []);
+
+  useEffect(() => {
+    if (location.pathname === "/") {
+      setSearchTerm("");
+    }
+  }, [location.pathname]);
 
   const handleSearch = (e) => {
     if (e.key === "Enter" && searchTerm.trim()) {
@@ -34,8 +49,12 @@ function Navbar() {
 
   return (
     <nav className="navbar">
-      <Link to="/" className="brand-name">
+      <Link
+        to={isAdminApp && isAdmin ? "/admin" : "/"}
+        className="brand-name"
+      >
         <span className="brand-icon">🌿</span>
+
         <span>
           <strong>FreshNest</strong>
         </span>
@@ -45,47 +64,69 @@ function Navbar() {
         <span className="search-icon">⌕</span>
 
         <input
-          type="text"
-          placeholder="Search for products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          onKeyDown={handleSearch}
+            type="text"
+            placeholder="Search for products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            onKeyDown={handleSearch}
         />
+
+        {searchTerm && (
+            <button
+                type="button"
+                className="search-clear"
+                onClick={() => {
+                  setSearchTerm("");
+                  navigate("/");
+                }}
+            >
+              ×
+            </button>
+        )}
       </div>
 
       <div className="nav-links">
-        {customer?.role === "ADMIN" ? (
-          <>
-            <Link to="/admin/inventory">Inventory</Link>
-            <Link to="/admin/orders">Orders</Link>
+        {isAdminApp ? (
+          isAdmin ? (
+            <>
+              <Link to="/admin/inventory">Inventory</Link>
 
-            <button
-              className="profile-button admin-profile"
-              onClick={() => navigate("/admin")}
-            >
-              👤 Admin
-            </button>
-          </>
+              <Link to="/admin/orders">Orders</Link>
+
+              <button
+                type="button"
+                className="profile-button admin-profile"
+                onClick={() => navigate("/admin")}
+              >
+                👤 Admin
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="login-link">
+              Login / Sign up
+            </Link>
+          )
         ) : (
           <>
             <Link to="/cart" className="cart-link">
-            <span className="cart-icon">🛒
-              {totalItems > 0 && (
-              <span className="cart-count">{totalItems}</span>
-            )}
-            </span>
-            <span>Cart</span>
+              <span className="cart-icon">
+                🛒
+                {totalItems > 0 && (
+                  <span className="cart-count">{totalItems}</span>
+                )}
+              </span>
+
+              <span>Cart</span>
             </Link>
 
             {customer ? (
-              <div className="profile-container">
-                <button
-                  className="profile-button"
-                  onClick={() => navigate("/profile")}
-                >
-                  👤 Profile
-                </button>
-              </div>
+              <button
+                type="button"
+                className="profile-button"
+                onClick={() => navigate("/profile")}
+              >
+                👤 Profile
+              </button>
             ) : (
               <Link to="/login" className="login-link">
                 Login / Sign up

@@ -1,127 +1,33 @@
-.admin {
+.admin-page {
   max-width: 1400px;
   margin: 0 auto;
   padding: 50px 50px 80px;
   color: #263238;
 
   .admin-header {
-    margin-bottom: 40px;
-    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 45px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid #e0e6e1;
 
     h1 {
-      margin: 0 0 10px;
+      margin: 0 0 8px;
       font-size: 40px;
       font-weight: 700;
+      color: #263238;
     }
 
     p {
       margin: 0;
-      color: #6b7280;
+      color: #6b756e;
       font-size: 17px;
     }
   }
 
-  .admin-cards {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-bottom: 50px;
-
-    .admin-card {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 190px;
-      padding: 28px;
-      background-color: #ffffff;
-      border: 1px solid #e0e6e1;
-      border-radius: 12px;
-      box-shadow: 0 4px 16px rgba(38, 50, 56, 0.07);
-      transition: 0.2s ease;
-
-      &:hover {
-        border-color: #b8cdbd;
-        box-shadow: 0 8px 22px rgba(38, 50, 56, 0.1);
-        transform: translateY(-3px);
-      }
-
-      .card-content {
-        h2 {
-          margin: 0 0 10px;
-          font-size: 22px;
-          font-weight: 600;
-          color: #263238;
-        }
-
-        p {
-          margin: 0;
-          color: #6b756e;
-          font-size: 14px;
-          line-height: 1.5;
-        }
-      }
-
-      button {
-        align-self: flex-start;
-        margin-top: 25px;
-        padding: 10px 17px;
-        border: 1px solid #2f6b3f;
-        border-radius: 7px;
-        background-color: #2f6b3f;
-        color: #ffffff;
-        font-size: 13px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s;
-
-        &:hover {
-          background-color: #245431;
-        }
-      }
-    }
-  }
-
-  .admin-actions {
-    padding: 28px;
-    background-color: #ffffff;
-    border: 1px solid #e0e6e1;
-    border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(38, 50, 56, 0.07);
-
-    h2 {
-      margin: 0 0 22px;
-      font-size: 22px;
-      font-weight: 600;
-    }
-
-    .quick-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-
-      button {
-        padding: 11px 20px;
-        border: 1px solid #cbd5cf;
-        border-radius: 7px;
-        background-color: #f2f7f3;
-        color: #405044;
-        font-size: 14px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s;
-
-        &:hover {
-          background-color: #e2eee5;
-          border-color: #9db5a2;
-        }
-      }
-    }
-  }
-
   .logout-button {
-    display: block;
-    margin: 30px auto 0;
-    padding: 10px 24px;
+    padding: 10px 22px;
     border: 1px solid #e1bcbc;
     border-radius: 7px;
     background-color: #fff5f5;
@@ -129,29 +35,110 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
-    transition: 0.2s;
+    transition: 0.2s ease;
 
     &:hover {
       background-color: #fde8e8;
+      border-color: #d99b9b;
+    }
+  }
+
+  .admin-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .admin-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+    padding: 32px;
+    background-color: #ffffff;
+    border: 1px solid #e0e6e1;
+    border-radius: 14px;
+    box-shadow: 0 4px 18px rgba(38, 50, 56, 0.07);
+    transition: 0.2s ease;
+
+    &:hover {
+      border-color: #b8cdbd;
+      box-shadow: 0 8px 24px rgba(38, 50, 56, 0.11);
+      transform: translateY(-3px);
+    }
+
+    .card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 58px;
+      height: 58px;
+      margin-bottom: 24px;
+      border-radius: 12px;
+      background-color: #edf5ef;
+      font-size: 28px;
+    }
+
+    .card-content {
+      flex: 1;
+
+      h2 {
+        margin: 0 0 12px;
+        font-size: 24px;
+        font-weight: 600;
+        color: #263238;
+      }
+
+      p {
+        margin: 0;
+        color: #6b756e;
+        font-size: 15px;
+        line-height: 1.6;
+      }
+    }
+
+    .primary-button {
+      align-self: flex-start;
+      margin-top: 28px;
+      padding: 11px 20px;
+      border: 1px solid #2f6b3f;
+      border-radius: 7px;
+      background-color: #2f6b3f;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s ease;
+
+      &:hover {
+        background-color: #245431;
+        border-color: #245431;
+      }
     }
   }
 }
 
 @media (max-width: 900px) {
-  .admin {
+  .admin-page {
     padding: 40px 25px 60px;
 
-    .admin-cards {
+    .admin-dashboard-grid {
       grid-template-columns: 1fr;
+      max-width: 600px;
     }
   }
 }
 
 @media (max-width: 500px) {
-  .admin {
+  .admin-page {
     padding: 30px 15px 50px;
 
     .admin-header {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: 20px;
+
       h1 {
         font-size: 30px;
       }
@@ -159,22 +146,19 @@
       p {
         font-size: 15px;
       }
-    }
 
-    .admin-cards {
-      .admin-card {
-        padding: 22px;
+      .logout-button {
+        align-self: flex-start;
       }
     }
 
-    .admin-actions {
-      padding: 22px;
+    .admin-card {
+      min-height: 250px;
+      padding: 24px;
 
-      .quick-actions {
-        flex-direction: column;
-
-        button {
-          width: 100%;
+      .card-content {
+        h2 {
+          font-size: 21px;
         }
       }
     }

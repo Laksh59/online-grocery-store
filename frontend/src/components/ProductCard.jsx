@@ -9,6 +9,10 @@ function ProductCard({ product }) {
   const [availableQuantity, setAvailableQuantity] = useState(null);
   const [message, setMessage] = useState("");
 
+  const customer = JSON.parse(localStorage.getItem("customer"));
+  const isAdmin = customer?.role === "ADMIN";
+  const isProductActive = product.active === true;
+
   useEffect(() => {
     getInventoryByProductId(product.productId)
       .then((response) => {
@@ -21,7 +25,7 @@ function ProductCard({ product }) {
   }, [product.productId]);
 
   const handleAddToCart = () => {
-    if (availableQuantity === 0) {
+    if (!isProductActive || availableQuantity === 0) {
       setMessage("Out of Stock");
       return;
     }
@@ -42,17 +46,21 @@ function ProductCard({ product }) {
 
       <p>Price: ₹{product.price}</p>
 
-      {availableQuantity === null ? (
-        <p>Checking stock...</p>
-      ) : availableQuantity === 0 ? (
-        <p className="out-of-stock">Out of Stock</p>
-      ) : (
-        <button type="button" onClick={handleAddToCart}>
-          Add to Cart
-        </button>
-      )}
+      {!isAdmin && (
+          <>
+            {availableQuantity === null ? (
+                <p>Checking stock...</p>
+            ) : !isProductActive || availableQuantity === 0 ? (
+                <p className="out-of-stock">Out of Stock</p>
+            ) : (
+                <button type="button" onClick={handleAddToCart}>
+                  Add to Cart
+                </button>
+            )}
 
-      {message && <p className="cart-message">{message}</p>}
+            {message && <p className="cart-message">{message}</p>}
+          </>
+      )}
     </div>
   );
 }

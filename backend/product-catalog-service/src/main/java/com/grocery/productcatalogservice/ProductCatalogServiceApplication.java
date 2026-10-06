@@ -26,3 +26,5 @@ public class ProductCatalogServiceApplication {
         SpringApplication.run(ProductCatalogServiceApplication.class, args);
     }
 }
+
+

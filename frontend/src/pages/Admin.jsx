@@ -11,56 +11,62 @@ function Admin() {
   };
 
   return (
-    <div className="admin">
-      <div className="admin-header">
-        <h1>Admin Dashboard</h1>
-        <p>Welcome back, Admin</p>
-      </div>
-
-        <div className="admin-card">
-          <div className="card-content">
-            <h2>Inventory Management</h2>
-            <p>Manage products, categories, stock and inventory</p>
+      <div className="admin-page">
+        <div className="admin-header">
+          <div>
+            <h1>Admin Dashboard</h1>
+            <p>Welcome back, Admin</p>
           </div>
 
-          <button type="button" onClick={() => navigate("/admin/inventory")}>
-            Manage Inventory
+          <button
+              type="button"
+              className="logout-button"
+              onClick={handleLogout}
+          >
+            Logout
           </button>
         </div>
 
-        <div className="admin-card">
-          <div className="card-content">
-            <h2>Orders</h2>
-            <p>View and manage customer orders</p>
+        <div className="admin-dashboard-grid">
+          <div className="admin-card">
+            <div className="card-icon">📦</div>
+
+            <div className="card-content">
+              <h2>Inventory Management</h2>
+              <p>
+                Manage products, categories and stock inventory.
+              </p>
+            </div>
+
+            <button
+                type="button"
+                className="primary-button"
+                onClick={() => navigate("/admin/inventory")}
+            >
+              Manage Inventory
+            </button>
           </div>
 
-          <button type="button" onClick={() => navigate("/admin/orders")}>
-            Manage Orders
-          </button>
-        </div>
-      
-      <div className="admin-actions">
-        <h2>Quick Actions</h2>
+          <div className="admin-card">
+            <div className="card-icon">🛒</div>
 
-        <div className="quick-actions">
-          <button type="button" onClick={() => navigate("/admin/inventory?form=product")}>
-            + Add Product
-          </button>
+            <div className="card-content">
+              <h2>Orders</h2>
+              <p>
+                View and manage customer orders.
+              </p>
+            </div>
 
-          <button type="button" onClick={() => navigate("/admin/inventory?form=category")}>
-            + Add Category
-          </button>
-
-          <button type="button" onClick={() => navigate("/admin/inventory?form=inventory")}>
-            + Add Inventory
-          </button>
+            <button
+                type="button"
+                className="primary-button"
+                onClick={() => navigate("/admin/orders")}
+            >
+              Manage Orders
+            </button>
+          </div>
         </div>
       </div>
-
-      <button type="button" className="logout-button" onClick={handleLogout}>
-        Logout
-      </button>
-    </div>
   );
 }
 

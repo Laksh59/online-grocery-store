@@ -53,6 +53,29 @@
   background-color: #ffffff;
 
   transition: 0.2s;
+
+  .search-clear {
+    margin-right: 10px;
+
+    border: none;
+    background: transparent;
+
+    color: #757575;
+    font-size: 24px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    padding: 2px 6px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .search-clear:hover {
+    color: #2e7d32;
+  }
 }
 
 .search-box:focus-within {
